@@ -12,9 +12,7 @@ const Login = () => {
       remember: false,
     },
     validationSchema: Yup.object({
-      email: Yup.string()
-        .email("Invalid email address")
-        .required("Required"),
+      email: Yup.string().email("Invalid email address").required("Required"),
       password: Yup.string()
         .min(6, "Password must be at least 6 characters")
         .required("Required"),
@@ -24,6 +22,21 @@ const Login = () => {
       navigate("/dashboard");
     },
   });
+
+  const formFields = [
+    {
+      name: "email",
+      type: "email",
+      placeholder: "eg: example123@gmail.com",
+      label: "Email",
+    },
+    {
+      name: "password",
+      type: "password",
+      placeholder: "Enter your password",
+      label: "Password",
+    },
+  ];
 
   return (
     <div className="flex min-h-screen bg-gray-100 items-center justify-center p-10">
@@ -63,38 +76,25 @@ const Login = () => {
             </p>
 
             <div className="space-y-4">
-              <div>
-                <label className="block text-gray-700">Email</label>
-                <input
-                  type="email"
-                  name="email"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.email}
-                  className="w-full p-2 border rounded-lg"
-                />
-                {formik.touched.email && formik.errors.email && (
-                  <div className="text-red-500 text-sm">{formik.errors.email}</div>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-gray-700">Password</label>
-                <input
-                  type="password"
-                  name="password"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.password}
-                  className="w-full p-2 border rounded-lg"
-                />
-                {formik.touched.password && formik.errors.password && (
-                  <div className="text-red-500 text-sm">{formik.errors.password}</div>
-                )}
-                <a href="#" className="text-purple-600 text-sm">
-                  Forgot password?
-                </a>
-              </div>
+              {formFields.map((field) => (
+                <div key={field.name}>
+                  <label className="block text-gray-700">{field.label}</label>
+                  <input
+                    type={field.type}
+                    name={field.name}
+                    placeholder={field.placeholder}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    value={formik.values[field.name]}
+                    className="w-full p-2 border rounded-lg"
+                  />
+                  {formik.touched[field.name] && formik.errors[field.name] && (
+                    <div className="text-red-500 text-sm">
+                      {formik.errors[field.name]}
+                    </div>
+                  )}
+                </div>
+              ))}
 
               <div className="flex items-center">
                 <input
@@ -104,7 +104,9 @@ const Login = () => {
                   checked={formik.values.remember}
                   className="mr-2"
                 />
-                <label className="text-gray-700">Remember sign in details</label>
+                <label className="text-gray-700">
+                  Remember sign in details
+                </label>
               </div>
 
               <button
